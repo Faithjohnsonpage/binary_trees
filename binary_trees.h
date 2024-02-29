@@ -48,8 +48,5 @@ int binary_tree_is_perfect(const binary_tree_t *tree);
 binary_tree_t *binary_tree_sibling(binary_tree_t *node);
 binary_tree_t *binary_tree_uncle(binary_tree_t *node);
 
-int is_leaf_at_depth(const binary_tree_t *tree, int depth);
-int check_depth_left_most(const binary_tree_t *tree);
-int is_all_internal_nodes_non_empty(const binary_tree_t *tree);
 
 #endif /* BINARY_TREES_H */
