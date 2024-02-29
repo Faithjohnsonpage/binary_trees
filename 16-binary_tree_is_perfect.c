@@ -1,27 +1,61 @@
 #include "binary_trees.h"
 
 /**
- * binary_tree_height_p - Measures the height of a binary tree.
+ * check_depth_left_most - Calculates the depth of the leftmost leaf node.
  *
  * @tree: A pointer to the root node of the tree.
  *
- * Return: The height of the tree, or -1 if @tree is NULL.
+ * Return: The depth of the leftmost leaf node.
  */
 
-int binary_tree_height_p(const binary_tree_t *tree)
+int check_depth_left_most(const binary_tree_t *tree)
 {
-	int left_height, right_height;
+	int depth = 0;
 
-	if (tree == NULL)
-		return (-1);
+	while (tree->left != NULL)
+	{
+		depth++;
+		tree = tree->left;
+	}
 
-	left_height = binary_tree_height_p(tree->left);
-	right_height = binary_tree_height_p(tree->right);
+	return (depth);
+}
 
-	if (left_height > right_height)
-		return (1 + left_height);
-	else
-		return (1 + right_height);
+/**
+ * is_leaf_at_depth - Checks if all leaf nodes are at a specific depth.
+ *
+ * @tree: A pointer to the root node of the tree.
+ * @depth: The depth to check for leaf nodes.
+ *
+ * Return: 1 if all leaf nodes are at the specified depth, 0 otherwise.
+ */
+
+int is_leaf_at_depth(const binary_tree_t *tree, int depth)
+{
+
+	if (tree->left == NULL && tree->right == NULL)
+		return (depth == 0);
+
+	return (is_leaf_at_depth(tree->left, depth - 1) &&
+		is_leaf_at_depth(tree->right, depth - 1));
+}
+
+/**
+ * is_all_internal_nodes_non_empty - Checks if all internal nodes
+ * have both children non-empty.
+ *
+ * @tree: A pointer to the root node of the tree.
+ *
+ * Return: 1 if all internal nodes have both children non-empty, 0 otherwise.
+ */
+
+int is_all_internal_nodes_non_empty(const binary_tree_t *tree)
+{
+	if (tree->left == NULL && tree->right == NULL)
+		return (1);
+
+	return (is_all_internal_nodes_non_empty(tree->left) &&
+			is_all_internal_nodes_non_empty(tree->right));
 }
 
 /**
@@ -31,23 +65,24 @@ int binary_tree_height_p(const binary_tree_t *tree)
  *
  * Return: 1 if the tree is perfect, 0 otherwise.
  */
+
 int binary_tree_is_perfect(const binary_tree_t *tree)
 {
-	size_t left_height, right_height;
+	int depth = 0, leaves = 0, internal_nodes = 0;
 
 	if (tree == NULL)
 		return (0);
 
-	left_height = binary_tree_height_p(tree->left);
-	right_height = binary_tree_height_p(tree->right);
+	depth = check_depth_left_most(tree);
 
-	if (left_height != right_height)
+	leaves = is_leaf_at_depth(tree, depth);
+	if (leaves == 0)
 		return (0);
 
-	if (tree->left == NULL && tree->right == NULL)
-		return (1);
+	internal_nodes = is_all_internal_nodes_non_empty(tree);
+	if (internal_nodes == 0)
+		return (0);
 
-	return (binary_tree_is_perfect(tree->left) &&
-			binary_tree_is_perfect(tree->right));
+	return (1);
 }
 
